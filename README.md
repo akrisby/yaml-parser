@@ -29,7 +29,7 @@ cmake ..
 cmake --build .
 
 # example binary will be `yaml_parser_example`
-./yaml_parser_example
+./yaml_parser_example -s test/shema.json -c test/config.yaml
 ```
 
 CLI usage
@@ -45,7 +45,7 @@ Examples
 Run with the example files in the repository root:
 
 ```bash
-./yaml_parser_example
+./yaml_parser_example -s test/schema.json -c test/config.yaml
 ```
 
 Run with explicit files:
