@@ -13,6 +13,15 @@ Repository layout
 - `test/` — example `config.yaml`/`schema.json`
 - `CMakeLists.txt` — project build
 
+References
+- [yaml-cpp](https://github.com/jbeder/yaml-cpp)
+- [nlohmann/json](https://github.com/nlohmann/json)
+- [JSON Schema](https://json-schema.org/)
+- [JSON Schema Validation](https://json-schema.org/understanding-json-schema/)
+- [JSON Schema Specification](https://json-schema.org/specification)
+- [YAML](https://yaml.org/)
+- [YAML Specification](https://yaml.org/spec/1.2/spec.html)
+
 Prerequisites
 - CMake 3.15 or later
 - A C++17-capable compiler (GCC, Clang, MSVC)
@@ -74,7 +83,7 @@ if (!v.validate()) {
 ```
 
 Notes and next steps
-- The JSON Schema validation implemented here is intentionally minimal (basic type checks, required fields, and nested property validation). For full JSON Schema support consider integrating a proven JSON Schema validator library and converting YAML -> JSON before validation.
+- The JSON Schema validation implemented here is intentionally minimal (basic type checks, required fields, and nested property validation). For full JSON Schema support consider integrating a proven JSON Schema validator library and converting YAML -> JSON before validation, e.g. [json-schema-validator](https://github.com/pboettch/json-schema-validator)
 - Tests: add unit tests to verify edge cases (missing files, type mismatches, arrays, nested objects).
 
 Contributing

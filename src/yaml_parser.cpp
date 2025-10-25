@@ -61,6 +61,20 @@ namespace yaml_parser
         return errors_;
     }
 
+    void YamlValidator::printConfig(std::ostream &out) const
+    {
+        if (!config_.IsDefined())
+        {
+            out << "<no config loaded>\n";
+            return;
+        }
+
+        // Use YAML emitter to print the node
+        YAML::Emitter emitter;
+        emitter << config_;
+        out << emitter.c_str() << std::endl;
+    }
+
     bool YamlValidator::validateNode(const YAML::Node &node, const nlohmann::json &schema)
     {
         // Basic type validation

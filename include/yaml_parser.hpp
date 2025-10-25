@@ -5,6 +5,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <ostream>
 
 namespace yaml_parser
 {
@@ -25,6 +26,9 @@ namespace yaml_parser
 
         // Get any validation errors
         std::vector<std::string> getErrors() const;
+
+        // Print the loaded configuration to the provided output stream
+        void printConfig(std::ostream &out) const;
 
     private:
         YAML::Node config_;

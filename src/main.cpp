@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
 {
     std::string schema_file = "schema.json";
     std::string config_file = "config.yaml";
+    bool do_print = false;
     std::string prog = argc > 0 ? argv[0] : "yaml-validator";
 
     // Simple command-line parsing: options and up to two positional args.
@@ -49,6 +50,11 @@ int main(int argc, char *argv[])
         }
         else if (!arg.empty() && arg[0] == '-')
         {
+            if (arg == "-p" || arg == "--print")
+            {
+                do_print = true;
+                continue;
+            }
             std::cerr << "Unknown option: " << arg << std::endl;
             print_usage(prog.c_str());
             return 1;
@@ -96,5 +102,9 @@ int main(int argc, char *argv[])
     }
 
     std::cout << "Configuration is valid!" << std::endl;
+    if (do_print)
+    {
+        validator.printConfig(std::cout);
+    }
     return 0;
 }
