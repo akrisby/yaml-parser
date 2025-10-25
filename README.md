@@ -1,69 +1,86 @@
-# YAML Parser with JSON Schema Validation
+# yaml-parser
 
-This project provides a C++ library for parsing YAML configuration files and validating them against JSON schemas using yaml-cpp and nlohmann/json libraries.
+A small C++ library and example CLI that parses YAML configuration files and validates them against a JSON Schema.
 
-## Requirements
+Key points
+- Language: C++17
+- Build: CMake (3.15+)
+- Dependencies: yaml-cpp, nlohmann/json
 
-- CMake 3.15 or higher
-- C++17 compiler
-- yaml-cpp library
-- nlohmann/json library
+Repository layout
+- `include/` — public headers
+- `src/` — library and example
+- `test/` — example `config.yaml`/`schema.json`
+- `CMakeLists.txt` — project build
 
-## Building the Project
+Prerequisites
+- CMake 3.15 or later
+- A C++17-capable compiler (GCC, Clang, MSVC)
+- If you don't have system packages for dependencies, CMake will download `yaml-cpp` using FetchContent. `nlohmann/json` is required as a packaged CMake config on the system; on Debian/Ubuntu install `nlohmann-json3-dev` or use a package manager of your choice.
+
+Build
 
 ```bash
-# Create a build directory
-mkdir build && cd build
-
-# Configure the project
+# create a build directory and configure
+mkdir -p build && cd build
 cmake ..
 
-# Build
+# build the library and example
 cmake --build .
+
+# example binary will be `yaml_parser_example`
+./yaml_parser_example
 ```
 
-## Usage
+CLI usage
 
-Here's a basic example of how to use the validator:
+The example program accepts optional flags or positional arguments:
+
+- `-s, --schema <file>` — path to schema file (default: `schema.json`)
+- `-c, --config <file>` — path to config file (default: `config.yaml`)
+- `-h, --help` — show usage
+
+Examples
+
+Run with the example files in the repository root:
+
+```bash
+./yaml_parser_example
+```
+
+Run with explicit files:
+
+```bash
+# named flags
+./yaml_parser_example -s test/schema.json -c test/config.yaml
+
+# positional args (schema then config)
+./yaml_parser_example test/schema.json test/config.yaml
+```
+
+Library usage (minimal)
+
+Include the header and call the load/validate functions:
 
 ```cpp
 #include "yaml_parser.hpp"
-#include <iostream>
 
-int main() {
-    yaml_parser::YamlValidator validator;
-    
-    if (!validator.loadSchema("schema.json")) {
-        std::cerr << "Failed to load schema" << std::endl;
-        return 1;
-    }
-    
-    if (!validator.loadConfig("config.yaml")) {
-        std::cerr << "Failed to load config" << std::endl;
-        return 1;
-    }
-    
-    if (!validator.validate()) {
-        std::cerr << "Validation failed:" << std::endl;
-        for (const auto& error : validator.getErrors()) {
-            std::cerr << "- " << error << std::endl;
-        }
-        return 1;
-    }
-    
-    std::cout << "Configuration is valid!" << std::endl;
-    return 0;
+yaml_parser::YamlValidator v;
+v.loadSchema("schema.json");
+v.loadConfig("config.yaml");
+if (!v.validate()) {
+  for (auto &e : v.getErrors()) std::cerr << e << std::endl;
 }
 ```
 
-## Features
+Notes and next steps
+- The JSON Schema validation implemented here is intentionally minimal (basic type checks, required fields, and nested property validation). For full JSON Schema support consider integrating a proven JSON Schema validator library and converting YAML -> JSON before validation.
+- Tests: add unit tests to verify edge cases (missing files, type mismatches, arrays, nested objects).
 
-- Parse YAML configuration files
-- Validate against JSON Schema
-- Type validation
-- Required property validation
-- Detailed error reporting
+Contributing
 
-## License
+PRs welcome. Please describe tests and add small, focused changes.
 
-MIT License
+License
+
+MIT
