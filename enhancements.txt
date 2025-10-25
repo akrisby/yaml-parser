@@ -1,0 +1,49 @@
+Top enhancements (short list)
+
+Integrate a full JSON Schema validator (recommended next step)
+
+What: Use a library such as nlohmann/json-schema-validator (https://github.com/pboettch/json-schema-validator) and convert YAML to JSON before validating. This supports full draft support, $ref, formats, and comprehensive schema features.
+Why: The current validator only does basic checks. Using a validated library gives correct, standards-compliant validation.
+Effort: Medium (1–2 days). Need to add dependency + CMake changes, convert YAML node to nlohmann::json reliably, update tests/examples.
+Files to change: CMakeLists.txt, yaml_parser.hpp, yaml_parser.cpp, main.cpp, tests.
+Add unit tests and CI
+
+What: Add Catch2 or GoogleTest + tests for load/validate/print and failure cases. Add GitHub Actions workflow to build + run tests.
+Why: Ensures correctness and prevents regressions.
+Effort: Small–Medium (half to 1 day for basic tests + CI template).
+Files to add: test/CMakeLists.txt, test/*.cpp, .github/workflows/ci.yml.
+Improve CLI UX (flags & output formats)
+
+What: Add flags --json-output (print config as JSON), --verbose, --exit-code behavior, --set key=value overrides to modify loaded config.
+Why: More useful as a CLI tool and friendly for scripting.
+Effort: Small (hours).
+Files to change: main.cpp.
+Packaging and dependency management
+
+What: Add vcpkg or Conan support; add install targets in CMake; provide pkg-config or CMake config export.
+Why: Easier integration into other projects.
+Effort: Medium.
+Logging, diagnostics, and sanitizers
+
+What: Add spdlog, richer errors with YAML line numbers, enable ASAN/UBSAN in CI.
+Why: Improves developer experience and robustness.
+Effort: Small–Medium.
+Documentation and examples
+
+What: Expand README, add more examples, and a CONTRIBUTING guide.
+Why: Helps users adopt the library.
+Effort: Small.
+Security/fuzz testing
+
+What: Add fuzz targets and run sanitizers.
+Why: Safety and hardening.
+Effort: Medium–Large.
+Concrete next step (my recommended first implementation)
+
+Integrate nlohmann/json-schema-validator and convert YAML -> JSON before calling the library. This gives full, standards-compliant validation and is the most valuable improvement.
+If you want, I can implement that now. I would:
+
+Add dependency in CMakeLists.txt (FetchContent or system package).
+Add a helper to convert YAML::Node to nlohmann::json in yaml_parser.cpp.
+Replace current validate logic with a call to the json-schema-validator.
+Add a basic unit test and update README examples.
