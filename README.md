@@ -64,7 +64,7 @@ Run with explicit files:
 ./yaml_parser_example -s test/schema.json -c test/config.yaml
 
 # positional args (schema then config)
-./yaml_parser_example test/schema.json test/config.yaml
+./yaml_parser_example test/test.schema.json test/test.yaml
 ```
 
 Library usage (minimal)

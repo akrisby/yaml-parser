@@ -13,8 +13,8 @@ static void print_usage(const char *prog)
 
 int main(int argc, char *argv[])
 {
-    std::string schema_file = "schema.json";
-    std::string config_file = "config.yaml";
+    std::string schema_file = "test.schema.json";
+    std::string config_file = "test.yaml";
     bool do_print = false;
     std::string prog = argc > 0 ? argv[0] : "yaml-validator";
 
