@@ -35,68 +35,11 @@ namespace yaml_utils
             // weakly_canonical may fail if path doesn't exist; keep absolute
         }
 
-        std::string key = p.string();
-        if (key.empty())
-            throw std::runtime_error("empty config path");
-
+        YAML::Node root = YAML::LoadFile(p.string());
         std::unordered_set<std::string> seen;
-        seen.insert(key);
-
-        // Load ALL top-level documents so we can preserve read order when
-        // multiple root-level !include directives are present.
-        std::vector<YAML::Node> docs = YAML::LoadAllFromFile(p.string());
-
-        // Resolve includes in each document
-        for (auto &doc : docs)
-        {
-            resolveIncludesRec(doc, p.parent_path(), seen);
-        }
-
-        if (docs.empty())
-        {
-            return YAML::Node();
-        }
-
-        if (docs.size() == 1)
-        {
-            return docs[0];
-        }
-
-        // If all docs are maps -> merge maps in read order (later overrides earlier)
-        bool allMaps = std::all_of(docs.begin(), docs.end(), [](const YAML::Node &n)
-                                   { return n.IsMap(); });
-        if (allMaps)
-        {
-            YAML::Node merged = YAML::Node(YAML::NodeType::Map);
-            for (const auto &d : docs)
-            {
-                for (auto it = d.begin(); it != d.end(); ++it)
-                {
-                    merged[it->first] = it->second;
-                }
-            }
-            return merged;
-        }
-
-        // If all docs are sequences -> concatenate in read order
-        bool allSeq = std::all_of(docs.begin(), docs.end(), [](const YAML::Node &n)
-                                  { return n.IsSequence(); });
-        if (allSeq)
-        {
-            YAML::Node concat = YAML::Node(YAML::NodeType::Sequence);
-            for (const auto &d : docs)
-            {
-                for (std::size_t i = 0; i < d.size(); ++i)
-                    concat.push_back(d[i]);
-            }
-            return concat;
-        }
-
-        // Mixed types: return a sequence containing each top-level document in read order
-        YAML::Node seq = YAML::Node(YAML::NodeType::Sequence);
-        for (const auto &d : docs)
-            seq.push_back(d);
-        return seq;
+        seen.insert(p.string());
+        resolveIncludesRec(root, p.parent_path(), seen);
+        return root;
     }
 
     inline void resolveIncludesRec(YAML::Node &node, const std::filesystem::path &baseDir, std::unordered_set<std::string> &seen)
