@@ -24,6 +24,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 # Add source files
 add_library(${PROJECT_NAME}
     src/yaml_parser.cpp
+    src/yaml_schema_validator.cpp
 )
 
 # Link libraries

@@ -10,34 +10,23 @@
 namespace yaml_parser
 {
 
-    class YamlValidator
+    // Responsible for loading YAML files (with include support) and providing access to the parsed node.
+    class YamlParser
     {
     public:
-        YamlValidator();
+        YamlParser();
 
-        // Load JSON schema from file
-        bool loadSchema(const std::string &schemaFile);
-
-        // Load YAML configuration from file
+        // Load YAML configuration from file (resolves !include)
         bool loadConfig(const std::string &configFile);
 
-        // Validate loaded YAML against loaded schema
-        bool validate();
-
-        // Get any validation errors
-        std::vector<std::string> getErrors() const;
+        // Return the loaded YAML root node
+        YAML::Node getConfig() const;
 
         // Print the loaded configuration to the provided output stream
         void printConfig(std::ostream &out) const;
 
     private:
         YAML::Node config_;
-        nlohmann::json schema_;
-        std::vector<std::string> errors_;
-
-        // Helper functions for validation
-        bool validateNode(const YAML::Node &node, const nlohmann::json &schema);
-        void addError(const std::string &error);
     };
 
 } // namespace yaml_parser

@@ -1,4 +1,5 @@
 #include "yaml_parser.hpp"
+#include "yaml_schema_validator.hpp"
 #include <iostream>
 #include <string>
 
@@ -76,22 +77,28 @@ int main(int argc, char *argv[])
         }
     }
 
-    yaml_parser::YamlValidator validator;
+    // Separate parser and validator
+    yaml_parser::YamlParser parser;
+    yaml_parser::YamlSchemaValidator validator;
 
-    // Example usage
+    // Load schema first (so we can report schema errors early)
     if (!validator.loadSchema(schema_file))
     {
         std::cerr << "Failed to load schema: " << schema_file << std::endl;
+        for (const auto &e : validator.getErrors())
+            std::cerr << "- " << e << std::endl;
         return 1;
     }
 
-    if (!validator.loadConfig(config_file))
+    // Load config (with includes)
+    if (!parser.loadConfig(config_file))
     {
         std::cerr << "Failed to load config: " << config_file << std::endl;
         return 1;
     }
 
-    if (!validator.validate())
+    // Validate parsed config
+    if (!validator.validate(parser.getConfig()))
     {
         std::cerr << "Validation failed:" << std::endl;
         for (const auto &error : validator.getErrors())
@@ -102,9 +109,10 @@ int main(int argc, char *argv[])
     }
 
     std::cout << "Configuration is valid!" << std::endl;
+
     if (do_print)
     {
-        validator.printConfig(std::cout);
+        parser.printConfig(std::cout);
     }
     return 0;
 }
